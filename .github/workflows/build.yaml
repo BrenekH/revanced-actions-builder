@@ -15,6 +15,10 @@ jobs:
           distribution: zulu
           java-version: "17"
 
+      - name: Reassemble YouTube APK
+        run: cat youtube.apk.* > youtube.apk
+        working-directory: ${{ github.workspace }}/sources
+
       - name: Patch YouTube APK
         run: java -jar revanced-cli.jar --apk youtube.apk --bundles revanced-patches.jar --merge revanced-integrations.apk --out ${{ github.workspace }}/revanced.apk
         working-directory: ${{ github.workspace }}/sources

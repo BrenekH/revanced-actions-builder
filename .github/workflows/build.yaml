@@ -32,3 +32,29 @@ jobs:
         with:
           name: ReVanced-YouTube.apk
           path: ${{ github.workspace }}/revanced.apk
+
+  build-youtube-music:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: "17"
+
+      - name: Write Out Keystore
+        run: echo -n "${{ secrets.REVANCED_KEYSTORE_B64 }}" | base64 --decode - > revanced.keystore
+        working-directory: ${{ github.workspace }}/sources
+
+      - name: Patch YouTube Music APK
+        run: java -jar revanced-cli.jar --keystore revanced.keystore --apk youtubemusic.apk --bundles revanced-patches.jar --merge revanced-integrations.apk --out ${{ github.workspace }}/revanced-music.apk
+        working-directory: ${{ github.workspace }}/sources
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ReVanced-YouTube-Music.apk
+          path: ${{ github.workspace }}/revanced-music.apk
